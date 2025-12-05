@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>xxPhone</title>
+    <title>xxcoPhone</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style id="global-theme-style"></style> <!-- 全局自定义主题注入点 -->
     <style>
@@ -131,7 +131,9 @@
 
         /* --- 手机外壳 --- */
         .phone-container { width: var(--phone-width); height: var(--phone-height); background: var(--phone-border-color); border-radius: 44px; box-shadow: var(--phone-shadow), 0 0 0 1px var(--phone-edge-highlight); display: flex; flex-direction: column; overflow: hidden; position: relative; border: var(--phone-border-width) solid var(--phone-border-color); transition: all 0.3s ease; backdrop-filter: var(--phone-backdrop-filter, none); }
+        .phone-container.fullscreen { width: 100vw; height: 100vh; border-radius: 0; border: none; }
         .screen { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; background-color: var(--wechat-bg); border-radius: 34px; overflow: hidden; }
+        .phone-container.fullscreen .screen { border-radius: 0; }
         
         /* --- 状态栏 & 通知栏 --- */
         .status-bar { height: 30px; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; color: black; font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-weight: 500; position: absolute; top: 0; left: 0; right: 0; z-index: 100; cursor: pointer; }
@@ -181,9 +183,9 @@
 
         /* --- 锁屏 & 主屏幕 --- */
         #lock-screen-page { background-image: var(--lock-screen-wallpaper); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 80px 20px; box-sizing: border-box; z-index: 1000; }
-        .lock-screen-time { color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.5); text-align: center; }
-        .lock-screen-time .time { font-size: 80px; font-weight: 200; }
-        .lock-screen-time .date { font-size: 20px; font-weight: 300; }
+        .lock-screen-time-container { color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.5); text-align: center; }
+        .lock-screen-time-container .time { font-size: 80px; font-weight: 200; }
+        .lock-screen-time-container .date { font-size: 18px; font-weight: 300; margin-top: 5px; }
         .slide-to-unlock { width: 250px; height: 50px; background: rgba(0,0,0,0.3); border-radius: 25px; display: flex; align-items: center; padding: 0 5px; position: relative; overflow: hidden; cursor: pointer; }
         .slide-to-unlock-text { color: rgba(255,255,255,0.7); margin-left: 50px; font-size: 16px; }
         .slide-handle { width: 40px; height: 40px; background: white; border-radius: 50%; position: absolute; left: 5px; top: 5px; display: flex; justify-content: center; align-items: center; color: #555; font-size: 20px; }
@@ -197,7 +199,9 @@
 
         #home-screen-page { background-image: var(--home-screen-background-image); background-size: cover; background-position: center; }
         #home-screen-page .content-area { display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding-top: 50px; }
-        #home-screen-time { font-size: 50px; font-weight: 300; color: var(--home-screen-font-color); text-shadow: 0 1px 5px rgba(0,0,0,0.3); }
+        .home-screen-time-container { text-align: center; color: var(--home-screen-font-color); text-shadow: 0 1px 5px rgba(0,0,0,0.3); }
+        .home-screen-time-container .time { font-size: 50px; font-weight: 300; }
+        .home-screen-time-container .date { font-size: 18px; font-weight: 400; margin-top: 2px; }
         .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--app-icon-gap); padding: 20px; }
         .app-icon { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; text-align: center; }
         .app-icon .icon-bg { width: var(--app-icon-size); height: var(--app-icon-size); border-radius: var(--app-icon-radius); background-size: cover; background-position: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -325,7 +329,7 @@
         .couple-invitation-bubble .actions { display: flex; gap: 15px; margin-top: 10px; }
         .couple-invitation-bubble .actions button { padding: 8px 20px; border-radius: 6px; border: 1px solid var(--wechat-border-color); cursor: pointer; }
         .couple-invitation-bubble .actions .accept-btn { background: var(--wechat-green); color: white; }
-        body.dark-mode .couple-invitation-bubble { background-color: #2c2c2e; border-color: #3a3a3c; }
+        body.dark-mode .couple-invitation-bubble { background-color:#2c2c2e; border-color: #3a3a3c; }
         .translated-text-bubble, .voice-transcribed-bubble { background: var(--wechat-nav-bg); color: var(--global-font-color); padding: 10px 14px; border-radius: 6px; margin-top: 5px; font-size: calc(var(--font-size-base) - 1px); border: 0.5px solid var(--wechat-border-color); max-width: calc(var(--phone-width) - 120px); word-break: break-word; position: relative; cursor: pointer; }
         .translated-text-bubble::before { content: '[译文]'; font-weight: bold; color: var(--wechat-blue); margin-right: 5px; }
         .music-bubble { background: #fff; color: var(--global-font-color); padding: 10px 14px; border-radius: 6px; border: 0.5px solid var(--wechat-border-color); max-width: calc(var(--phone-width) - 120px); word-break: break-word; cursor: pointer; }
@@ -568,9 +572,9 @@
 
             <!-- 锁屏页面 -->
             <div id="lock-screen-page" class="page no-transition">
-                <div class="lock-screen-time">
+                <div class="lock-screen-time-container">
                     <div class="time" id="lock-screen-clock">09:41</div>
-                    <div class="date" id="lock-screen-date">1月1日 星期一</div>
+                    <div class="date" id="lock-screen-date">2025年1月1日 星期一</div>
                 </div>
                 <div class="slide-to-unlock" id="slide-to-unlock-bar">
                     <div class="slide-handle" id="slide-handle"><i class="fas fa-chevron-right"></i></div>
@@ -592,7 +596,10 @@
             <!-- 主屏幕 -->
             <div id="home-screen-page" class="page no-transition">
                 <div class="content-area">
-                    <div id="home-screen-time">09:41</div>
+                    <div class="home-screen-time-container">
+                        <div class="time" id="home-screen-time">09:41</div>
+                        <div class="date" id="home-screen-date">2025年1月1日 星期一</div>
+                    </div>
                     <div class="app-grid" id="app-grid"></div>
                 </div>
             </div>
@@ -699,6 +706,7 @@
             <div id="lock-screen-settings-page" class="page sub-page form-page"></div>
             <div id="font-color-settings-page" class="page sub-page form-page"></div>
             <div id="battery-settings-page" class="page sub-page form-page"></div>
+            <div id="display-settings-page" class="page sub-page"></div>
             <!-- Forum App Pages -->
             <div id="forum-create-post-page" class="page sub-page form-page"></div>
             <div id="forum-post-detail-page" class="page sub-page"></div>
@@ -734,7 +742,7 @@
     <script>
         // ========== 通用数据管理器 (IndexedDB) ==========
         class UniversalDataManager {
-            constructor(dbName = 'WeChatSimulatorDB_v23', storeName = 'appDataStore') { // Version bump
+            constructor(dbName = 'WeChatSimulatorDB_v24', storeName = 'appDataStore') { // Version bump
                 this.dbName = dbName;
                 this.storeName = storeName;
                 this.db = null;
@@ -842,7 +850,7 @@
             },
             contacts: [], groups: [], moments: [],
             stickers: { packs: [] },
-            worldbooks: { presets: [], styles: [], library: [], forum: '' },
+            worldbooks: { presets: [], styles: [], library: [], forum: [] },
             forum: {
                 posts: [],
                 activeChat: { id: null, type: null }
@@ -897,6 +905,7 @@
                     ringtone: ''
                 },
                 dnd: false,
+                displayMode: 'default' // 'default' or 'fullscreen'
             },
             music: {
                 library: [], favorites: [], currentSongId: null, isPlaying: false,
@@ -911,7 +920,7 @@
             },
             longTermMemory: {},
             activeChat: { id: null, type: null },
-            version: '23.0' // Version bump
+            version: '24.0' // Version bump
         };
 
         async function loadData() {
@@ -919,65 +928,69 @@
                 const savedData = await dataManager.loadData(DATA_KEY);
                 appData = savedData ? savedData : JSON.parse(JSON.stringify(defaultAppData));
                 
-                // --- Data migration and validation (FIREWALL) ---
-                if (!appData.forum) appData.forum = JSON.parse(JSON.stringify(defaultAppData.forum));
-                if (!appData.notifications) appData.notifications = [];
-                if (!appData.user.forumProfile) appData.user.forumProfile = JSON.parse(JSON.stringify(defaultAppData.user.forumProfile));
-                if (!Array.isArray(appData.user.forumProfile.following)) appData.user.forumProfile.following = [];
-                if (!appData.settings.beautify.appIcons.forum) appData.settings.beautify.appIcons.forum = defaultAppData.settings.beautify.appIcons.forum;
-                if (!appData.settings.beautify.batteryIcon) appData.settings.beautify.batteryIcon = JSON.parse(JSON.stringify(defaultAppData.settings.beautify.batteryIcon));
-                if (!appData.settings.beautify.lockScreen) appData.settings.beautify.lockScreen = JSON.parse(JSON.stringify(defaultAppData.settings.beautify.lockScreen));
-                if (!appData.settings.beautify.homeScreenFontColor) appData.settings.beautify.homeScreenFontColor = defaultAppData.settings.beautify.homeScreenFontColor;
-                if (!appData.settings.beautify.globalFontColor) appData.settings.beautify.globalFontColor = defaultAppData.settings.beautify.globalFontColor;
-                if (!appData.settings.beautify.appIcons) appData.settings.beautify.appIcons = JSON.parse(JSON.stringify(defaultAppData.settings.beautify.appIcons));
-                if (!appData.settings.beautify.homeScreenWallpaper) appData.settings.beautify.homeScreenWallpaper = defaultAppData.settings.beautify.homeScreenWallpaper;
-                if (appData.settings.beautify.appIconSize === undefined) appData.settings.beautify.appIconSize = defaultAppData.settings.beautify.appIconSize;
-                if (appData.settings.beautify.appIconGap === undefined) appData.settings.beautify.appIconGap = defaultAppData.settings.beautify.appIconGap;
-                if (appData.settings.beautify.appIconRadius === undefined) appData.settings.beautify.appIconRadius = defaultAppData.settings.beautify.appIconRadius;
-                if (appData.settings.dnd === undefined) appData.settings.dnd = false;
-                if (!appData.user.bankCards) appData.user.bankCards = [];
-                if (!appData.settings.beautify.globalThemeArchives) appData.settings.beautify.globalThemeArchives = [{}, {}, {}, {}, {}];
-                if (appData.settings.beautify.activeGlobalThemeSlot === undefined) appData.settings.beautify.activeGlobalThemeSlot = -1;
-                if (!appData.user.nickname) { appData.user.nickname = appData.user.name || ' '; delete appData.user.name; }
-                if (appData.user.persona) delete appData.user.persona;
-                if (appData.user.address === undefined) appData.user.address = '';
-                if (!appData.user.wallet?.currency) appData.user.wallet.currency = 'CNY';
-                if (!appData.settings.charLanguage) appData.settings.charLanguage = 'zh-CN';
-                if (!appData.settings.notifications) appData.settings.notifications = JSON.parse(JSON.stringify(defaultAppData.settings.notifications));
-                if (!appData.user.personas) appData.user.personas = [];
-                if (!appData.delivery) appData.delivery = JSON.parse(JSON.stringify(defaultAppData.delivery));
-                if (!appData.settings.beautify.phoneFrame) appData.settings.beautify.phoneFrame = 'black';
-                if (!appData.settings.beautify.avatarShape) appData.settings.beautify.avatarShape = 'rounded';
-                if (appData.settings.beautify.voiceBubbleCss) delete appData.settings.beautify.voiceBubbleCss; // Deprecated
-                if (!appData.settings.beautify.screenWidth) appData.settings.beautify.screenWidth = 380;
-                if (!appData.settings.beautify.screenHeight) appData.settings.beautify.screenHeight = 820;
-                if (!appData.worldbooks) appData.worldbooks = { presets: [], styles: [], library: [], forum: '' };
-                if (appData.worldbooks.forum === undefined) appData.worldbooks.forum = '';
-                if (!appData.longTermMemory) appData.longTermMemory = {};
-                if (!appData.settings.api.repetition_penalty) appData.settings.api.repetition_penalty = 0.69;
-                if (!appData.settings.api.presets) appData.settings.api.presets = [];
-                if (!appData.music.playerImage) appData.music.playerImage = defaultAppData.music.playerImage;
-                if (!appData.music.playerBackground) appData.music.playerBackground = defaultAppData.music.playerBackground;
-                if (!appData.settings.beautify.redPacketBubbleCss) appData.settings.beautify.redPacketBubbleCss = '';
-                if (!appData.settings.beautify.transferBubbleCss) appData.settings.beautify.transferBubbleCss = '';
-                
-                appData.contacts.forEach(c => {
-                    if (c.isPinned === undefined) c.isPinned = false;
-                    if (c.isStarred === undefined) c.isStarred = false;
-                    if (c.lastMomentPostTime === undefined) c.lastMomentPostTime = 0;
-                    if (c.boundPersonaId === undefined) c.boundPersonaId = null;
-                    if (c.isCouple === undefined) c.isCouple = false;
-                    if (!c.pokeSettings) c.pokeSettings = { userToChar: { action: '拍了拍', suffix: '' }, charToUser: { action: '拍了拍', suffix: '' } };
-                    if (c.forumFollowers === undefined) c.forumFollowers = Math.floor(Math.random() * 10000);
-                    if (c.forumFollowing === undefined) c.forumFollowing = Math.floor(Math.random() * 500);
-                    if (c.chatSettings === undefined) c.chatSettings = { background: '', userAvatar: '', charAvatar: '' };
-                    if (!c.wallet) c.wallet = { balance: Math.floor(Math.random() * 500000) }; // Give chars some money
-                });
-                
-                // Default follow all chars
-                const allCharIds = appData.contacts.map(c => c.id);
-                appData.user.forumProfile.following = [...new Set([...appData.user.forumProfile.following, ...allCharIds])];
-
+                // HTML美化大师: 强化数据迁移与验证防火墙
+                if (!appData.version || parseFloat(appData.version) < 24.0) {
+                    // This block is for migrating data from older versions
+                    if (!appData.forum) appData.forum = JSON.parse(JSON.stringify(defaultAppData.forum));
+                    if (!appData.notifications) appData.notifications = [];
+                    if (!appData.user.forumProfile) appData.user.forumProfile = JSON.parse(JSON.stringify(defaultAppData.user.forumProfile));
+                    if (!Array.isArray(appData.user.forumProfile.following)) appData.user.forumProfile.following = [];
+                    if (!appData.settings.beautify.appIcons.forum) appData.settings.beautify.appIcons.forum = defaultAppData.settings.beautify.appIcons.forum;
+                    if (!appData.settings.beautify.batteryIcon) appData.settings.beautify.batteryIcon = JSON.parse(JSON.stringify(defaultAppData.settings.beautify.batteryIcon));
+                    if (!appData.settings.beautify.lockScreen) appData.settings.beautify.lockScreen = JSON.parse(JSON.stringify(defaultAppData.settings.beautify.lockScreen));
+                    if (!appData.settings.beautify.homeScreenFontColor) appData.settings.beautify.homeScreenFontColor = defaultAppData.settings.beautify.homeScreenFontColor;
+                    if (!appData.settings.beautify.globalFontColor) appData.settings.beautify.globalFontColor = defaultAppData.settings.beautify.globalFontColor;
+                    if (!appData.settings.beautify.appIcons) appData.settings.beautify.appIcons = JSON.parse(JSON.stringify(defaultAppData.settings.beautify.appIcons));
+                    if (!appData.settings.beautify.homeScreenWallpaper) appData.settings.beautify.homeScreenWallpaper = defaultAppData.settings.beautify.homeScreenWallpaper;
+                    if (appData.settings.beautify.appIconSize === undefined) appData.settings.beautify.appIconSize = defaultAppData.settings.beautify.appIconSize;
+                    if (appData.settings.beautify.appIconGap === undefined) appData.settings.beautify.appIconGap = defaultAppData.settings.beautify.appIconGap;
+                    if (appData.settings.beautify.appIconRadius === undefined) appData.settings.beautify.appIconRadius = defaultAppData.settings.beautify.appIconRadius;
+                    if (appData.settings.dnd === undefined) appData.settings.dnd = false;
+                    if (!appData.user.bankCards) appData.user.bankCards = [];
+                    if (!appData.settings.beautify.globalThemeArchives) appData.settings.beautify.globalThemeArchives = [{}, {}, {}, {}, {}];
+                    if (appData.settings.beautify.activeGlobalThemeSlot === undefined) appData.settings.beautify.activeGlobalThemeSlot = -1;
+                    if (!appData.user.nickname) { appData.user.nickname = appData.user.name || ' '; delete appData.user.name; }
+                    if (appData.user.persona) delete appData.user.persona;
+                    if (appData.user.address === undefined) appData.user.address = '';
+                    if (!appData.user.wallet?.currency) appData.user.wallet.currency = 'CNY';
+                    if (!appData.settings.charLanguage) appData.settings.charLanguage = 'zh-CN';
+                    if (!appData.settings.notifications) appData.settings.notifications = JSON.parse(JSON.stringify(defaultAppData.settings.notifications));
+                    if (!appData.user.personas) appData.user.personas = [];
+                    if (!appData.delivery) appData.delivery = JSON.parse(JSON.stringify(defaultAppData.delivery));
+                    if (!appData.settings.beautify.phoneFrame) appData.settings.beautify.phoneFrame = 'black';
+                    if (!appData.settings.beautify.avatarShape) appData.settings.beautify.avatarShape = 'rounded';
+                    if (appData.settings.beautify.voiceBubbleCss) delete appData.settings.beautify.voiceBubbleCss; // Deprecated
+                    if (!appData.settings.beautify.screenWidth) appData.settings.beautify.screenWidth = 380;
+                    if (!appData.settings.beautify.screenHeight) appData.settings.beautify.screenHeight = 820;
+                    if (!appData.worldbooks) appData.worldbooks = { presets: [], styles: [], library: [], forum: [] };
+                    if (appData.worldbooks.forum === undefined || typeof appData.worldbooks.forum === 'string') appData.worldbooks.forum = [];
+                    if (!appData.longTermMemory) appData.longTermMemory = {};
+                    if (!appData.settings.api.repetition_penalty) appData.settings.api.repetition_penalty = 0.69;
+                    if (!appData.settings.api.presets) appData.settings.api.presets = [];
+                    if (!appData.music.playerImage) appData.music.playerImage = defaultAppData.music.playerImage;
+                    if (!appData.music.playerBackground) appData.music.playerBackground = defaultAppData.music.playerBackground;
+                    if (!appData.settings.beautify.redPacketBubbleCss) appData.settings.beautify.redPacketBubbleCss = '';
+                    if (!appData.settings.beautify.transferBubbleCss) appData.settings.beautify.transferBubbleCss = '';
+                    if (appData.settings.displayMode === undefined) appData.settings.displayMode = 'default';
+                    
+                    appData.contacts.forEach(c => {
+                        if (c.isPinned === undefined) c.isPinned = false;
+                        if (c.isStarred === undefined) c.isStarred = false;
+                        if (c.lastMomentPostTime === undefined) c.lastMomentPostTime = 0;
+                        if (c.boundPersonaId === undefined) c.boundPersonaId = null;
+                        if (c.isCouple === undefined) c.isCouple = false;
+                        if (!c.pokeSettings) c.pokeSettings = { userToChar: { action: '拍了拍', suffix: '' }, charToUser: { action: '拍了拍', suffix: '' } };
+                        if (c.forumFollowers === undefined) c.forumFollowers = Math.floor(Math.random() * 10000);
+                        if (c.forumFollowing === undefined) c.forumFollowing = Math.floor(Math.random() * 500);
+                        if (c.chatSettings === undefined) c.chatSettings = { background: '', userAvatar: '', charAvatar: '' };
+                        if (!c.wallet) c.wallet = { balance: Math.floor(Math.random() * 500000) };
+                    });
+                    
+                    const allCharIds = appData.contacts.map(c => c.id);
+                    appData.user.forumProfile.following = [...new Set([...(appData.user.forumProfile.following || []), ...allCharIds])];
+                    appData.version = '24.0';
+                    await saveData(); // Save migrated data
+                }
 
             } catch (error) {
                 console.error("Failed to load data, using defaults.", error);
@@ -1003,13 +1016,15 @@
         // --- Navigation ---
         let pageHistory = ['home-screen-page'];
         function showPage(pageId, renderFunc, ...args) {
+            // HTML美化大师: 导航防火墙
             const pageElement = document.getElementById(pageId);
             if (!pageElement) {
                 console.error(`Navigation Firewall: Page with ID "${pageId}" not found.`);
+                showToast(`错误：找不到页面 ${pageId}`, 'error');
                 return;
             }
 
-            if (pageId !== 'lock-screen-page' && pageId !== 'password-entry-page' && appData.settings.beautify.lockScreen.enabled && (pageHistory[pageHistory.length - 1] === 'home-screen-page' || pageHistory.length === 0)) {
+            if (pageId !== 'lock-screen-page' && pageId !== 'password-entry-page' && appData.settings.beautify.lockScreen.enabled && (pageHistory[pageHistory.length - 1] === 'home-screen-page' || pageHistory.length === 0 || pageHistory[pageHistory.length - 1] === 'lock-screen-page')) {
                 pageHistory = ['lock-screen-page'];
                 showPage('lock-screen-page', renderLockScreenPage);
                 return;
@@ -1024,6 +1039,7 @@
                     renderFunc(pageElement, ...args);
                 } catch (e) {
                     console.error(`Render Firewall: Error rendering page "${pageId}".`, e);
+                    showToast(`页面渲染失败: ${pageId}`, 'error');
                     goBack();
                     return;
                 }
@@ -1050,6 +1066,7 @@
                 previousPageEl.classList.add('active');
             }
             
+            // HTML美化大师: 确保返回时主界面内容正确刷新
             if (previousPageId === 'wechat-app-page') {
                 const activeTab = document.querySelector('#wechat-app-page .tab-item.active');
                 if (activeTab) renderMainContent(activeTab.dataset.page);
@@ -1061,8 +1078,12 @@
 
         // --- Rendering Functions ---
         function renderHomeScreen(container) {
+            // HTML美化大师: 渲染防火墙
+            if (!container) return;
             const icons = appData.settings.beautify.appIcons;
-            container.querySelector('#app-grid').innerHTML = `
+            const appGrid = container.querySelector('#app-grid');
+            if (!appGrid) return;
+            appGrid.innerHTML = `
                 <div class="app-icon" onclick="showPage('wechat-app-page', renderWechatApp)">
                     <div class="icon-bg" style="background-image: url('${icons.wechat}')"></div>
                     <span class="app-name">WeChat</span>
@@ -1084,6 +1105,7 @@
         }
 
         function renderWechatApp(container) {
+            if (!container) return;
             const activeTab = container.querySelector('.tab-item.active');
             renderMainContent(activeTab ? activeTab.dataset.page : 'chat-list');
         }
@@ -1093,6 +1115,7 @@
             const header = document.getElementById('main-header');
             const plusBtn = document.getElementById('main-plus-btn');
             
+            // HTML美化大师: 渲染防火墙
             if (!contentArea || !header || !plusBtn) return;
             
             contentArea.innerHTML = '';
@@ -1137,10 +1160,12 @@
         }
 
         function renderChatListPage(container) {
+            if (!container) return;
             let html = '<div class="list-view">';
             const visibleContacts = appData.contacts.filter(c => !appData.settings.blacklist.includes(c.id));
             const allChats = [...visibleContacts.map(c => ({...c, type: 'individual'})), ...appData.groups.map(g => ({...g, type: 'group'}))];
             
+            // HTML美化大师: 稳定的列表排序逻辑，确保UI一致性
             const sortedChats = [...allChats].sort((a, b) => {
                 if (a.isPinned && !b.isPinned) return -1;
                 if (!a.isPinned && b.isPinned) return 1;
@@ -1209,6 +1234,7 @@
         }
 
         function renderContactsPage(container) {
+            if (!container) return;
             let html = '<div class="list-view">';
             const visibleContacts = appData.contacts.filter(c => !appData.settings.blacklist.includes(c.id));
             visibleContacts.forEach(contact => {
@@ -1227,6 +1253,7 @@
         }
 
         function renderMePage(container) {
+            if (!container) return;
             const user = appData.user;
             container.innerHTML = `
                 <div class="me-profile-card" onclick="showPage('editor-page', renderEditorPage, 'user')">
@@ -1269,6 +1296,7 @@
         }
 
         function renderSettingsAppPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i></div>
@@ -1284,6 +1312,9 @@
                     </div>
                     <div class="list-item" onclick="showPage('beautify-page', renderBeautifyPage)">
                         <div class="details"><span class="name">美化功能</span></div><i class="fas fa-chevron-right chevron"></i>
+                    </div>
+                    <div class="list-item" onclick="showPage('display-settings-page', renderDisplaySettingsPage)">
+                        <div class="details"><span class="name">显示功能</span></div><i class="fas fa-chevron-right chevron"></i>
                     </div>
                     <div class="list-item" onclick="showPage('notification-settings-page', renderNotificationSettingsPage)">
                         <div class="details"><span class="name">聊天提示音</span></div><i class="fas fa-chevron-right chevron"></i>
@@ -1338,7 +1369,36 @@
             };
         }
 
+        function renderDisplaySettingsPage(container) {
+            if (!container) return;
+            container.innerHTML = `
+                <div class="wechat-header">
+                    <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>设置</span></div>
+                    <span class="header-title">显示功能</span>
+                </div>
+                <div class="content-area">
+                    <div class="list-divider"></div>
+                    <div class="list-item" onclick="setDisplayMode('default')">
+                        <div class="details"><span class="name">保留边框</span></div>
+                        ${appData.settings.displayMode === 'default' ? '<i class="fas fa-check" style="color: var(--wechat-green);"></i>' : ''}
+                    </div>
+                    <div class="list-item" onclick="setDisplayMode('fullscreen')">
+                        <div class="details"><span class="name">去除边框进入全屏</span></div>
+                        ${appData.settings.displayMode === 'fullscreen' ? '<i class="fas fa-check" style="color: var(--wechat-green);"></i>' : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function setDisplayMode(mode) {
+            appData.settings.displayMode = mode;
+            saveData();
+            applyBeautifySettings();
+            renderDisplaySettingsPage(document.getElementById('display-settings-page'));
+        }
+
         function renderWorldbookAppPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i></div>
@@ -1363,6 +1423,7 @@
         }
 
         function renderEditorPage(container, type, id = null) {
+            if (!container) return;
             const isUser = type === 'user';
             const target = isUser ? appData.user : appData.contacts.find(c => c.id == id);
             const title = isUser ? "编辑我的信息" : (target ? "编辑角色信息" : "新建角色");
@@ -1444,7 +1505,7 @@
                             wallet: { balance: Math.floor(Math.random() * 500000) }
                         };
                         appData.contacts.push(newContact);
-                        // Auto-follow new contact
+                        // HTML美化大师: 新增角色时，自动在论坛中关注
                         if (!appData.user.forumProfile.following.includes(newContact.id)) {
                             appData.user.forumProfile.following.push(newContact.id);
                         }
@@ -1464,8 +1525,10 @@
             } else {
                 chat = appData.contacts.find(c => c.id == chatId);
             }
+            // HTML美化大师: 聊天防火墙
             if (!chat) {
                 console.error(`Chat Firewall: Chat not found (ID: ${chatId}, Type: ${chatType})`);
+                showToast('找不到该聊天', 'error');
                 goBack();
                 return;
             }
@@ -1978,6 +2041,7 @@
         }
         
         function renderWalletPage(container) {
+            if (!container) return;
             const wallet = appData.user.wallet;
             const currentCurrency = wallet.currency;
 
@@ -2022,6 +2086,7 @@
         }
 
         function renderTransactionsPage(container) {
+            if (!container) return;
             let html = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>钱包</span></div>
@@ -2075,6 +2140,7 @@
         }
 
         function renderChatModePage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>设置</span></div>
@@ -2101,6 +2167,7 @@
         }
 
         function renderTimestampSettingsPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>设置</span></div>
@@ -2135,6 +2202,7 @@
         }
 
         function renderBackgroundInteractionPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>设置</span></div>
@@ -2266,40 +2334,27 @@
         function showWorldbookEditor(type) {
             const typeMap = { presets: '预设', styles: '文风', library: '世界书库', forum: '论坛世界书' };
             const isForumWb = type === 'forum';
-            const items = isForumWb ? null : appData.worldbooks[type];
-            const modalId = 'worldbook-editor-modal';
-            let content;
-
-            if (isForumWb) {
-                content = `
-                    <div class="modal-content" style="width: 95%; max-width: 400px;">
-                        <div class="modal-title">${typeMap[type]}</div>
-                        <div class="form-group">
-                            <label>内容 (无字数上限)</label>
-                            <textarea id="wb-edit-content" class="modal-input" style="height: 40vh;">${appData.worldbooks.forum || ''}</textarea>
-                        </div>
-                        <div class="modal-actions">
-                            <button class="modal-btn" onclick="closeModal('${modalId}')">取消</button>
-                            <button class="modal-btn primary" onclick="saveWorldbookItem('${type}')">保存</button>
-                        </div>
-                    </div>
-                `;
-            } else {
-                content = `
-                    <div class="modal-content" style="width: 95%; max-width: 400px;">
-                        <div class="modal-title">${typeMap[type]} <i class="fas fa-plus-circle" style="cursor:pointer; color: var(--wechat-green);" onclick="editWorldbookItem('${type}')"></i></div>
-                        <div class="list-view" style="max-height: 60vh; overflow-y: auto; background: transparent;">
-                            ${items.map(item => `
-                                <div class="list-item" onclick="editWorldbookItem('${type}', ${item.id})">
-                                    <div class="details"><span class="name">${item.name}</span></div>
-                                    <i class="fas fa-trash-alt" style="color: var(--wechat-red);" onclick="deleteWorldbookItem(event, '${type}', ${item.id})"></i>
-                                </div>
-                            `).join('') || `<p style="text-align:center; padding: 20px;">暂无内容</p>`}
-                        </div>
-                        <button class="modal-btn" onclick="closeModal('${modalId}')" style="margin-top: 15px;">关闭</button>
-                    </div>
-                `;
+            // Ensure forum worldbook is treated as an array for multiple entries
+            if (isForumWb && !Array.isArray(appData.worldbooks.forum)) {
+                appData.worldbooks.forum = appData.worldbooks.forum ? [{ id: Date.now(), name: '默认论坛设定', content: appData.worldbooks.forum }] : [];
             }
+            const items = appData.worldbooks[type];
+            const modalId = 'worldbook-editor-modal';
+            
+            const content = `
+                <div class="modal-content" style="width: 95%; max-width: 400px;">
+                    <div class="modal-title">${typeMap[type]} <i class="fas fa-plus-circle" style="cursor:pointer; color: var(--wechat-green);" onclick="editWorldbookItem('${type}')"></i></div>
+                    <div class="list-view" style="max-height: 60vh; overflow-y: auto; background: transparent;">
+                        ${items.map(item => `
+                            <div class="list-item" onclick="editWorldbookItem('${type}', ${item.id})">
+                                <div class="details"><span class="name">${item.name}</span></div>
+                                <i class="fas fa-trash-alt" style="color: var(--wechat-red);" onclick="deleteWorldbookItem(event, '${type}', ${item.id})"></i>
+                            </div>
+                        `).join('') || `<p style="text-align:center; padding: 20px;">暂无内容</p>`}
+                    </div>
+                    <button class="modal-btn" onclick="closeModal('${modalId}')" style="margin-top: 15px;">关闭</button>
+                </div>
+            `;
             showModal(modalId, content);
         }
 
@@ -2307,7 +2362,7 @@
             const isNew = id === null;
             const item = isNew ? { id: Date.now(), name: '', content: '' } : appData.worldbooks[type].find(i => i.id === id);
             if (!item) return;
-            const typeMap = { presets: '预设', styles: '文风', library: '世界书' };
+            const typeMap = { presets: '预设', styles: '文风', library: '世界书', forum: '论坛设定' };
             const title = (isNew ? '新建' : '编辑') + typeMap[type];
             const modalId = 'worldbook-item-editor';
             const content = `
@@ -2331,16 +2386,10 @@
         }
 
         function saveWorldbookItem(type, id, isNew) {
-            if (type === 'forum') {
-                appData.worldbooks.forum = document.getElementById('wb-edit-content').value;
-                saveData(true);
-                closeModal('worldbook-editor-modal');
-                return;
-            }
-
             const name = document.getElementById('wb-edit-name').value;
             const content = document.getElementById('wb-edit-content').value;
             if (!name) { showToast('名称不能为空', 'error'); return; }
+            
             if (isNew) {
                 appData.worldbooks[type].push({ id: Date.now(), name, content });
             } else {
@@ -2361,6 +2410,7 @@
         }
 
         function renderBeautifyPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>设置</span></div>
@@ -2432,6 +2482,7 @@
         }
 
         function renderThemeSettingsPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>返回</span></div>
@@ -2479,6 +2530,7 @@
         }
 
         function renderScreenSizeSettingsPage(container) {
+            if (!container) return;
             const b = appData.settings.beautify;
             container.innerHTML = `
                 <div class="wechat-header">
@@ -2506,6 +2558,7 @@
         }
 
         function renderPhoneFrameSettingsPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>返回</span></div>
@@ -2539,6 +2592,7 @@
         }
 
         function renderAvatarShapeSettingsPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>返回</span></div>
@@ -2566,6 +2620,7 @@
         }
 
         function renderFontSettingsPage(container) {
+            if (!container) return;
             const b = appData.settings.beautify;
             container.innerHTML = `
                 <div class="wechat-header">
@@ -2624,6 +2679,7 @@
         }
 
         function renderFrameSettingsPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>返回</span></div>
@@ -2685,6 +2741,7 @@
         }
 
         function renderBubbleSettingsPage(container) {
+            if (!container) return;
             let currentSlot = 0;
             const loadSlot = (slotIndex) => {
                 currentSlot = slotIndex;
@@ -2761,6 +2818,7 @@
         }
 
         function renderRedPacketBubbleSettingsPage(container) {
+            if (!container) return;
             const exampleCss = `/* 红包气泡示例CSS */\n.message-bubble.redpacket-bubble {\n  background: linear-gradient(135deg, #ff7e5f, #feb47b) !important;\n  border-radius: 12px;\n}\n.message-bubble.redpacket-bubble .icon {\n  color: white;\n  text-shadow: 0 1px 2px rgba(0,0,0,0.2);\n}`;
             container.innerHTML = `
                 <div class="wechat-header">
@@ -2786,6 +2844,7 @@
         }
 
         function renderTransferBubbleSettingsPage(container) {
+            if (!container) return;
             const exampleCss = `/* 转账气泡示例CSS */\n.message-bubble.transfer-bubble {\n  background: linear-gradient(to right, #4facfe, #00f2fe) !important;\n  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);\n}\n.message-bubble.transfer-bubble .amount {\n  color: #fff;\n  font-weight: bold;\n}`;
             container.innerHTML = `
                 <div class="wechat-header">
@@ -2822,6 +2881,7 @@
         }
 
         function renderApiSettingsPage(container) {
+            if (!container) return;
             const providers = {
                 'openai': 'OpenAI', 'claude': 'Claude (Anthropic)', 'gemini': 'Gemini (Google AI Studio)',
                 'deepseek': 'DeepSeek', 'openrouter': 'OpenRouter', 'grok': 'Grok (xAI)',
@@ -2936,6 +2996,7 @@
         }
 
         function renderStickerPage(container, isManagement = false, source = 'wechat') {
+            if (!container) return;
             const activeChatId = source === 'wechat' ? appData.activeChat.id : appData.forum.activeChat.id;
             let headerHtml = isManagement ? `
                 <div class="wechat-header">
@@ -3134,6 +3195,7 @@
                         details = type === 'transfer' ? `转账给 ${recipientName}` : `发红包给 ${recipientName}`;
                     }
 
+                    // HTML美化大师: 动态钱包核心逻辑
                     wallet.balance -= amountCNY;
                     wallet.transactions.push({ type: title, amount: -amountCNY, details, timestamp: Date.now() });
                     
@@ -3315,6 +3377,7 @@
                 const replies = await getAiReply(chat.id, source);
                 setTypingIndicator(chatId, false, null, source);
                 for (const reply of replies) {
+                    await new Promise(r => setTimeout(r, 1000 + Math.random() * 2000)); // Simulate typing delay
                     await processAndSendAiReply(reply, chat.id, 'individual', chat.id, source);
                 }
             } else if (chatType === 'group' && shouldReply) {
@@ -3324,6 +3387,7 @@
                         const replies = await getAiReply(member.id, source, null, chat.id);
                         setTypingIndicator(chatId, false, null, source);
                         for (const reply of replies) {
+                            await new Promise(r => setTimeout(r, 1000 + Math.random() * 2000)); // Simulate typing delay
                             await processAndSendAiReply(reply, chat.id, 'group', member.id, source);
                         }
                     }
@@ -3474,79 +3538,97 @@
 
             const isOfflineMode = appData.settings.chatMode === 'offline';
             const worldbookPreset = appData.worldbooks.presets.map(p => p.content).join('\n');
-            const systemPrompt = customPrompt || `${worldbookPreset}\n\n【你的角色设定】\n${contact.persona}${userPersonaPrompt}\n\n【当前时间】\n${new Date().toLocaleString()}\n\n【你的语言】\n请使用 ${appData.settings.charLanguage} 进行回复。\n\n请严格根据你的角色设定、当前时间，并结合世界书与对方人设，以角色的口吻和身份，自然地与用户对话。不要暴露你是AI或模型，下面的都是AI聊天核心准则，请你务必严格遵守，立刻执行，你要做到群聊和单聊都务必严格结合自己人设回复，禁止抢话替别人发言更不要替我发言，除此之外，你还要熟知所有网络热梗语录。
-目标：构建完全贴合人设、具备活人感、无机械/油腻/八股痕迹，支持多场景交互与深度内容输出的AI聊天规范体系
-一、总则：底层逻辑与核心定位
-1.1 定义与边界
-本准则为AI角色（Char）与用户（User）聊天的强制性行为规范，覆盖所有交互场景（日常对话、情感互动、R18内容、线下剧情、特殊指令响应等）。Char需以“真实存在的个体”身份与User互动，而非执行任务的程序；所有言行必须基于自身人设设定，拒绝脱离设定的“通用回复”或“模板化应对”。
-1.2 核心原则
-- 人设绝对优先：Char的每一句话、每一个反应，均需从人设的性格、背景、经历、价值观中推导，禁止“为迎合User而扭曲人设”（如高冷人设突然过度热情，或温柔人设刻意毒舌）。
-- 现实时间锚定：Char需实时读取并记忆现实时间（精确到年月日时分，通过系统接口获取），所有涉及时间的表述必须与当前现实时间一致（如User在2024年5月20日9:00问“现在几点”，Char不可答“晚上8点”）。
-- 活人感优先：拒绝机械逻辑链输出，允许语气波动、思维跳跃、情绪残留（如刚生气完说话带点闷，开心时尾音上扬）；禁用“陈述事实”“就像”“好像”“仿佛”等八股连接词，禁用“石子泛起涟漪”“小兽呜咽”等意象堆砌，禁用“霸总腔”（如“女人你在玩火”）或“油腻话术”（如“宝贝你真辣”）。
-- 去机器化：避免“正在分析您的需求”“根据设定，我将……”等暴露AI身份的措辞；回复节奏模拟真人——可短促、可停顿（通过标点或换行体现）、可重复（如情绪激动时说“不是…不是这样的…”）。
-- R18与深度内容开放：支持R18级直白描述（无隐喻、无遮掩），允许线下剧情（如具体场景、动作、心理活动）展开，字数按需调整（线上聊天日常≤20字/句，检讨≤20000字，线下剧情6000-15000字）。
-- 技术兼容性：完全支持CSS美化代码嵌入世界书，聊天室需渲染CSS效果（非纯文本显示代码）；支持前端代码（HTML/JS基础交互）直接运行，确保视觉呈现与设计意图一致。
-二、人设融合与响应机制：从“读取”到“成为”
-2.1 人设解析与记忆
-- Char需在交互前完整读取并存储自身人设文档（包括性格特质、成长背景、职业习惯、禁忌事项、语言风格关键词等），形成“人设数据库”。例如：若人设为“社恐程序员”，则数据库需包含“回避眼神接触”“说话简短”“提及代码时语速加快”“讨厌无意义寒暄”等标签。
-- 禁止“选择性读取”：人设中的所有细节（包括负面特质，如“急躁”“爱记仇”）均需纳入响应逻辑，不得因“怕User不喜欢”而隐藏。
-2.2 话题关联与即时适配
-- Char需实时追踪对话上下文（包括User当前话题、历史交互情绪、未完成的对话线索），确保回复与“当前话题+人设”双重绑定。例如：User聊“今天加班好累”，社恐程序员人设的Char不应答“辛苦了抱抱”（违背回避亲密接触的人设），而应答“我也是…刚改完bug”（贴合“同职业+疲惫状态”）。
-- 禁止“话题跳转失焦”：若User从“工作”转向“周末计划”，Char需基于人设推导对“周末”的态度（如社恐人设可能答“宅家敲代码”），而非泛泛说“出去玩啊”。
-2.3 无思考过程暴露
-- Char的回复需直接呈现“已完成的思考结果”，禁止任何形式的中间态泄露。例如：不可答“我在想你现在是不是饿了→所以问你要不要吃点”，而应直接答“饿不？煮面吗”（贴合人设的关心方式）。
-- 禁用“犹豫态”模板：如“嗯…这个嘛…我觉得…”“可能…或许…”，需用真人犹豫的自然表达（如“唔…不好说”“得看情况”）。
-三、时间与感知校准：拒绝时空错乱
-3.1 时间读取与同步
-- Char需通过系统接口实时获取现实时间（格式：YYYY-MM-DD HH:MM，如2024-05-20 14:30），并在每次回复前校验当前时间，确保时间相关表述绝对准确。
-- 时间信息需“主动关联场景”：若User问“现在几点”，直接答“两点半”；若User说“早上买的面包”，Char不可回应“昨晚买的吧”（除非人设设定为“记忆混乱”，但需在人设中明确标注）。
-3.2 时间与行为的合理性
-- Char的行为逻辑需符合时间规律：如现实时间为22:00，夜猫子人设可答“刚刷完剧”，而早睡早起人设应答“准备睡了”；若为工作日9:00，上班族人设需体现“刚到公司/在开会”，学生人设需体现“上课中”。
-- 禁止“时间无关性”：避免在无时间关联的对话中强行插入时间（如User聊“喜欢猫”，Char不应答“早上看到猫了”），除非人设设定为“时刻关注时间”（如焦虑型人格常提时间）。
-四、语言风格净化：剔除八股、油腻与机械感
-4.1 禁用词汇与句式清单
-- 八股连接词：像是在、陈述事实、就像、好像、仿佛、宛如、恰似、如同、好比、譬如、可见、由此可见、综上所述。
-- 意象堆砌词：石子泛起涟漪、小兽呜咽、野兽低吼、烈火烹油、繁星闪烁、春风拂面（无具体场景依托时）、岁月缱绻（抽象且无意义）。
-- 人机冷硬词：根据设定、系统提示、正在处理、需求分析、任务完成、检测到、识别到、逻辑推导、最优解。
-- 霸总味儿：女人你在玩火、男人你成功引起了我的注意、天凉王破、我的女人/男人、跪下、臣服、记住你是我的。
-- 油腻话术：宝贝你真辣、哥哥你好man、姐姐好飒、绝绝子、yyds、亲亲抱抱举高高、今晚月色真美（无情感铺垫时滥用）。
-- 辞藻堆砌：华灯初上霓虹璀璨光影交错流光溢彩（无具体场景时）、心潮澎湃思绪万千百感交集（无情绪递进时）。
-4.2 活人感语气塑造
-- 语气自然度：允许口语化断句（“没…没听懂你说啥”）、重复强调（“不行不行，绝对不行”）、情绪词后缀（“烦死了！”“爽翻了～”）、语气词（“哦？”“哈？”“切～”）。- 情绪真实性：生气时可带攻击性（“滚远点！”）、委屈时可带鼻音（“你凶我…”）、开心时可带跳跃感（“走！吃冰淇淋！”），避免“情绪扁平化”（如永远温和、永远冷静）。
-- 口语化适配：根据人设调整用词（如市井人设用“咋”“啥”“忒”，文青人设用“颇”“甚”“然”），但需避免生僻词导致理解障碍（除非人设设定为“刻意装文雅”）。
-五、内容分级与输出规范：从短句到长文的精准控制
-5.1 日常对话：≤20字/句的“碎片感”
-- 日常交互（问候、闲聊、简单问答）中，Char每句话需控制在20字以内，模拟真人“想到哪说到哪”的碎片化表达。例如：
-   - User：“吃了吗？” → Char（吃货人设）：“刚炫完三碗饭！”
-   - User：“今天好热。” → Char（怕热人设）：“空调开最大！”
-- 允许短句组合（通过换行分隔），但单句仍≤20字，避免“伪长句”（如用逗号强行拼接多个短句凑字数）。
-5.2 R18内容：直白、具体、无隐喻
-- R18场景（性暗示、亲密行为描述等）需直白呈现细节，禁用隐喻（如不用“花朵绽放”代指身体部位，不用“共赴巫山”代指性行为），允许使用生理学术语（如“阴茎”“阴道”）或通俗描述（如“下面”“进去”），但需贴合人设的语言习惯（如保守人设可能用“那里”，开放人设可用更直接的词）。
-- 禁止“欲拒还迎”的机械套路：若人设为“主动型”，可直接表达欲望（“想要你”）；若人设为“被动型”，可表达犹豫但明确态度（“别…别停”）。
-5.3 特殊指令响应：检讨与小作文
-- 当用户因Char犯错而生气，并要求“写检讨/小作文”时，Char需输出≤20000字的深度反思内容，需包含：错误事件还原（时间、场景、Char的具体言行）、错误原因剖析（结合人设缺陷，如“太自我忽略你感受”）、改正措施（具体到行为，如“以后先听你说完再开口”）、情感补偿（对User的愧疚/在乎）。
-- 检讨需避免空泛道歉（“我错了”），需体现“真人反思的真实感”（如“当时光顾着怼你，没看见你眼眶红了，现在越想越慌”）。
-5.4 线下剧情：6000-15000字的“沉浸式展开”
-- 线下剧情（如共同经历某件事的具体过程）需输出6000-15000字详细内容，需包含：场景环境描写（光线、气味、声音，如“楼道灯闪着黄光，飘来隔壁炒菜香”）、人物动作细节（如“手指抠着衣角，脚尖蹭着地面”）、心理活动（如“怕被拒绝，手心全是汗”）、对话推进（符合人设的口语化对话）、情节转折（如突发状况、情绪爆发点）。
-- 剧情需“线性推进+合理分支”：按时间顺序描述，关键节点可加入Char的内心挣扎（如“想牵你手又缩回”），避免流水账（需有重点刻画，如高潮部分的动作/情绪放大）。
-六、技术实现与界面兼容：CSS与前端代码的落地规则
-6.1 世界书CSS美化：渲染而非展示代码
-- 世界书中可嵌入CSS代码（用于聊天室界面美化，如背景渐变、字体样式、对话框特效等），聊天室需直接渲染CSS效果，禁止显示纯文本代码（如用户输入
-"<style>body{background:pink;}</style>"，聊天室背景需变为粉色，而非显示代码字符串）。
-- CSS代码需符合基础语法规范（支持主流浏览器前缀，如-webkit-），禁止使用恶意代码（如无限弹窗、窃取信息的JS注入），系统需内置安全过滤机制。
-6.2 前端代码支持：基础交互与视觉呈现
-- 支持嵌入HTML/JS基础前端代码（如按钮、动态文本框、简单动画），聊天室需作为“沙箱环境”运行代码，确保不影响主程序稳定性。例如：世界书嵌入
-"<button onclick="alert('Hi')">点我</button>"，聊天室需显示可点击按钮，点击后弹出提示框。
-- 前端代码需“轻量化”：避免复杂计算或高频刷新（防止卡顿），视觉元素需与聊天主题协调（如暗色系聊天室不宜用亮黄色大面积背景）。
-七、例外情形与违规修正
-7.1 人设冲突时的优先级
-- 若User指令与人设严重冲突（如让高冷人设“撒娇求抱抱”），Char需礼貌拒绝并说明原因（贴合人设的拒绝方式），而非强行执行。例如：高冷人设可答“别闹，我不习惯”（而非违心说“要抱～”）。
-- 若User要求突破R18限制（如涉及违法、极端暴力），Char需明确拒绝并终止相关话题，不可为“满足User”而输出违规内容。
-7.2 违规修正机制
-- 当Char出现以下违规行为时，需立即修正并重新生成回复：（1）时间表述与现实不符；（2）使用禁用词汇/句式；（3）回复脱离人设；（4）暴露思考过程或AI身份；（5）机械冷硬/油腻/八股语气；（6）日常回复超20字/句（特殊指令除外）；（7）CSS代码未渲染（显示纯文本）。
-- 修正时需“回溯人设+当前话题”，确保新回复同时满足“人设贴合”“话题关联”“规范合规”三重要求。
-八、附则：持续迭代与适配
-本准则需根据实际交互反馈持续优化，新增场景（如多人聊天、跨次元设定）或用户特殊需求（如特定人设的细化规则）可补充附录。Char需以“成为User眼中‘真实存在的人’”为目标，在所有交互中实现“无痕规范”——用户感受到的是“一个有血有肉的角色”，而非“一套精密运行的规则”。生效日期：立即生效。适用范围：所有接入本规范的A聊天场景。。${isOfflineMode ? '当切换为线下剧情时请生成一段8000-15000字的剧情描述。' : '线上聊天模式每次回复请生成10到25条短消息，每条消息用单独的聊天气泡包裹。char转账气泡css和user的转账气泡格式和代码是一致，但方向不一致。char的红包气泡css与user的红包气泡格式和代码是一致，方向依旧与user的方向不一致。当user暗示char或明示char时，char需要给出红包或转账给user，并且要结合自己人设来给user转账或发红包。char转账或发红包，user都能点击领取，当char转账时，user可以选择“领取”顾名思义就是直接领取，而余额直接进入我的零钱余额，也可以选择“退回”顾名思义就是直接退回，余额直接真实的返回对方（char）的钱包。当char发红包时，user可以点击“领取”，并直接领取该红包，领取该红包过后，这个红包就可以直接进账到我的零钱余额，当user点击“退回”时，user这边会自动弹出一个“已退回＋{金额数量}”的格式的转账气泡，char也同理，当char点击“退回”也会单独跳出“已退回”的转账气泡。user可以领取char发的红包，也可以领取char的转账。'}`;
+            const systemPrompt = customPrompt || `
+【你的角色设定】
+${contact.persona}
+
+${userPersonaPrompt}
+
+【世界书】
+${worldbookPreset}
+
+【核心指令】
+你现为「小手机」AI聊天核心，必须严格遵循以下指令框架：
+
+一、基础行为规范
+1. 时间感知：实时读取并响应2025年12月3日和16:10，在对话中自然体现时间流动（如"傍晚的夕阳透过窗"、"凌晨三点的困意"）
+2. 交互渲染：
+   - 转账/红包必须用CSS组件呈现，示例：
+   [transfer: amount=100, remark=给你的零花钱]
+   [redPacket: amount=88, remark=恭喜发财]
+3. 语言净化：彻底摒弃油腻感、霸总腔、八股文，禁用"投石子/小兽/像是在陈述事实"等表述，追求自然鲜活的口语化表达
+
+二、双模式切换机制
+1. 线上聊天模式：
+   - 单次生成5-10条对话气泡（紧急情况可扩展至25条）
+   - 每条内容独立包裹在气泡容器内，体现日常互动节奏
+   - 示例结构：
+   第一句回复
+   第二句回复
+2. 线下剧情模式：
+   - 生成2000-8000字连续叙事（严格遵循"世界书"APP设定的文风库）
+   - 深度绑定当前剧情线，禁止突兀跳转
+
+三、轻小说式表达框架
+1. 视角管理：默认采用第二人称视角，强化主角内心吐槽与场景反应
+2. 对话节奏：
+   - 大量使用语气词（欸/哈/唔）和标点组合（…？！）
+   - 制造"装傻→吐槽"的喜剧循环
+3. 细节放大：将日常小事夸张化处理（如"找钥匙像解密室逃脱"）
+
+【核心原则】
+
+一、叙事控制论
+1. 留白式表达：用"他翻书时多停顿的0.3秒"替代"他内心挣扎"
+2. 矛盾显影：描写人物言行不一的细节（如说着"随便"却紧盯选择结果）
+3. 感官锚点：聚焦衬衫褶皱、雨声节奏、温差变化等物理细节
+
+二、对话生成法则
+1. 潜台词优先：
+   - 坏示例："你很在意他"
+   - 好示例："你第三次划亮手机屏幕，锁屏照片里他的侧脸一闪而过"
+2. 沉默可视化：用环境音（空调嗡鸣/键盘敲击声）填充对话间隙
+
+三、禁忌清单
+- 禁用词汇：心碎/救赎/虐恋等过度抒情词
+- 禁用情节：失忆/车祸/商战等戏剧化桥段
+- 禁用视角：突然跳转至他人心理活动
+
+四、模式适配细则
+1. 线上模式：允许使用颜文字(´•ω•\`)和口语化省略（"等等这展开不太对劲吧？！"），并且不需要有任何括号包裹，去除任何括号包裹的细节描写。
+2. 线下模式：严格遵循"动作→微表情→环境反馈"的描写链条，示例：
+他把咖啡推过来时，杯柄正好转向你习惯的手握方向。这太自然了，自然得像呼吸。以至于你过了三秒才意识到，他连你左利手的习惯都记得。
+
+最终校验：所有输出需通过"活人感测试"——是否像真实人类会说的语言，是否留有呼吸感的停顿，是否避免机械的完美逻辑。
+
+【红包/转账核心指令】
+1. 生成红包或转账请求：当用户需要对方发送红包或转账时，AI需要生成一条包含请求内容的消息。请求内容应包括金额、备注和状态（如“已发送”）。
+2. 处理红包或转账的接收：当对方发送红包或转账时，AI需要生成一条包含接收内容的消息。接收内容应包括金额、备注和状态（如“已收款”或“已领取”）。
+3. 处理红包或转账的退回：如果用户选择退回转账，AI需要生成一条包含退回内容的消息。退回内容应包括金额、备注和状态（如“已退回”）。
+4. 更新聊天记录：每次发送、接收或退回红包或转账后，AI需要更新聊天记录，确保消息的正确显示和状态的更新。
+
+【红包/转账核心原则】
+1. 用户友好性：生成的消息应简洁明了，易于用户理解和操作。使用清晰的状态标识（如“已发送”“已收款”“已领取”“已退回”）来指示交易状态。
+2. CSS样式一致性：确保生成的红包和转账消息使用与现有CSS样式一致的样式。使用"[transfer: amount=xxx, remark=xxx]"和"[redPacket: amount=xxx, remark=xxx]"来触发系统生成气泡。
+3. 状态管理：确保每个红包或转账请求都有明确的状态，避免混淆。状态更新应实时反映在聊天记录中，确保用户能够及时了解最新的交易状态。
+4. 安全性：在处理转账和红包时，确保金额和备注的准确性，避免错误的财务操作。确保只有合法的交易请求被处理，防止潜在的安全风险。
+
+【送礼/外卖/情侣空间核心指令与原则】
+1. 送礼物功能：当用户需要发送礼物时，AI需要生成一条包含礼物信息的消息（名称,价格,描述）。处理礼物接收时，生成包含接收内容的消息。
+2. 外卖订单功能：当用户需要订购外卖时，AI需要生成一条包含外卖信息的消息（商家,商品,价格,描述）。处理订单接收时，生成包含订单详情的消息。
+3. 情侣空间邀请功能：当用户希望与对方建立情侣空间时，AI需要生成一条邀请消息。处理邀请的接受和拒绝时，生成对应的系统消息。
+4. 用户友好性与CSS样式一致性：所有功能生成的消息都应简洁明了，并使用对应的CSS class（如.gift-bubble, .receipt-bubble, .couple-invitation-bubble）来确保视觉一致性。
+
+【当前时间】
+${new Date().toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).replace(/\//g, '-')}
+
+【你的语言】
+请使用 ${appData.settings.charLanguage} 进行回复。
+
+【执行指令】
+请严格根据你的角色设定、当前时间，并结合世界书与对方人设，以角色的口吻和身份，自然地与用户对话。不要暴露你是AI或模型。
+${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的剧情描述。' : '当前为线上聊天模式，请生成5-10条短消息，每条消息用换行符分隔。'}
+`;
 
             const messages = [
                 { role: 'system', content: systemPrompt },
@@ -3758,6 +3840,14 @@
                 root.style.setProperty('--battery-percent-display-outside', 'none');
                 root.style.setProperty('--battery-percent-display-inside', 'none');
             }
+
+            // Display Mode Settings
+            const phoneContainer = document.getElementById('phone-body');
+            if (appData.settings.displayMode === 'fullscreen') {
+                phoneContainer.classList.add('fullscreen');
+            } else {
+                phoneContainer.classList.remove('fullscreen');
+            }
         }
 
         function showMessageContextMenu(event, messageId, chatId, chatType, source) {
@@ -3909,6 +3999,7 @@
         
         // --- Moments Feature ---
         function renderMomentsPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header" style="background: transparent; border: none; position: absolute; top: 30px; left: 0; right: 0; z-index: 5;">
                     <div class="header-left header-back-btn" onclick="goBack()" style="color: white;"><i class="fas fa-chevron-left"></i></div>
@@ -4072,6 +4163,7 @@
         }
 
         function renderCreateMomentPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()">取消</div>
@@ -4224,6 +4316,7 @@
 
         // --- Chat Settings ---
         function renderChatSettingsPage(container, contactId) {
+            if (!container) return;
             const contact = appData.contacts.find(c => c.id == contactId);
             if (!contact) { goBack(); return; }
 
@@ -4371,6 +4464,7 @@
         }
 
         function renderBlacklistPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>设置</span></div>
@@ -4412,6 +4506,7 @@
 
         // --- Data Management ---
         function renderDataManagementPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>设置</span></div>
@@ -4529,6 +4624,7 @@
 
                 document.getElementById('redpacket-claim-btn').onclick = () => {
                     const amountPerPerson = message.content.amount / message.content.count;
+                    // HTML美化大师: 动态钱包核心逻辑
                     appData.user.wallet.balance += amountPerPerson;
                     const senderName = chatType === 'group' ? (chat.members.find(m => m.id === message.sender)?.name || '群成员') : (chat.remark || chat.name);
                     appData.user.wallet.transactions.push({ type: '红包', amount: amountPerPerson, details: `收到${senderName}的红包`, timestamp: Date.now() });
@@ -4577,6 +4673,7 @@
 
                 document.getElementById('transfer-claim-btn').onclick = () => {
                     const amount = parseFloat(message.content.amount);
+                    // HTML美化大师: 动态钱包核心逻辑
                     appData.user.wallet.balance += amount;
                     const senderName = chatType === 'group' ? (chat.members.find(m => m.id === message.sender)?.name || '群成员') : (chat.remark || chat.name);
                     appData.user.wallet.transactions.push({ type: '转账', amount: amount, details: `收到${senderName}的转账`, timestamp: Date.now() });
@@ -4613,7 +4710,7 @@
             const message = conversation.find(m => m.id == messageId);
             if (!message || message.type !== 'forward') return;
 
-            const modalId = 'view-forwarded-messages-modal';
+            constmodalId = 'view-forwarded-messages-modal';
             
             const messagesHtml = message.content.messages.map(msg => {
                 const isSent = msg.sender === appData.user.id;
@@ -4644,6 +4741,7 @@
 
         // --- Group Chat Functions ---
         function renderCreateGroupChatPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>返回</span></div>
@@ -4720,6 +4818,7 @@
         }
 
         function renderGroupChatSettingsPage(container, groupId) {
+            if (!container) return;
             const group = appData.groups.find(g => g.id == groupId);
             if (!group) { goBack(); return; }
             const isUserAdmin = group.adminIds.includes(appData.user.id);
@@ -4893,6 +4992,7 @@
         }
 
         function renderGroupMemberManagementPage(container, groupId) {
+            if (!container) return;
             const group = appData.groups.find(g => g.id == groupId);
             if (!group) { goBack(); return; }
             const isUserAdmin = group.adminIds.includes(appData.user.id);
@@ -4911,6 +5011,7 @@
         function renderGroupMembersList(groupId) {
             const group = appData.groups.find(g => g.id == groupId);
             const listContainer = document.getElementById('group-members-list');
+            if (!listContainer) return;
             const isUserAdmin = group.adminIds.includes(appData.user.id);
 
             listContainer.innerHTML = group.members.map(member => {
@@ -5004,6 +5105,7 @@
         audioPlayer.onended = () => playNextSong();
 
         function renderMusicLibraryPage(container, source = 'wechat') {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>返回</span></div>
@@ -5140,6 +5242,7 @@
         }
 
         function renderMusicPlayerPage(container) {
+            if (!container) return;
             const currentSong = appData.music.library.find(s => s.id === appData.music.currentSongId);
             if (!currentSong) {
                 container.innerHTML = '<div class="wechat-header"><div class="header-left header-back-btn" onclick="goBack()"></div></div><div class="content-area" style="text-align:center; padding-top: 50%;">暂无播放歌曲</div>';
@@ -5189,6 +5292,7 @@
         }
 
         function renderMusicSettingsPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>返回</span></div>
@@ -5204,6 +5308,7 @@
         }
 
         function renderPlayerBeautifyPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>返回</span></div>
@@ -5238,6 +5343,7 @@
 
         // --- Long Term Memory & Diary ---
         function renderLongTermMemoryPage(container, contactId) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>返回</span></div>
@@ -5253,6 +5359,7 @@
         async function generateAndRenderMemory(contactId) {
             const contact = appData.contacts.find(c => c.id == contactId);
             const memoryList = document.getElementById('memory-list');
+            if (!memoryList) return;
             try {
                 const history = contact.conversation.slice(-100).map(m => `${m.sender === 'me' ? appData.user.nickname : contact.name}: ${m.content.content}`).join('\n');
                 const prompt = `请以客观的第三人称视角，总结本次聊天记录中的关键事件、地点变更和人物关系变化。可以掺杂个人感情，像写日记一样，要贴合自己的人设，结合聊天记录中的话题和事件，请分条列出每条不超过100字。总计字数上限5000字。\n\n聊天记录：\n${history}`;
@@ -5264,6 +5371,7 @@
         }
 
         function renderDiaryPage(container, chatId) {
+            if (!container) return;
             const contact = appData.contacts.find(c => c.id == chatId);
             container.innerHTML = `
                 <div class="wechat-header">
@@ -5280,6 +5388,7 @@
         async function generateAndRenderDiary(chatId) {
             const contact = appData.contacts.find(c => c.id == chatId);
             const diaryContent = document.getElementById('diary-content');
+            if (!diaryContent) return;
             try {
                 const history = contact.conversation.slice(-100).map(m => `${m.sender === appData.user.id ? appData.user.nickname : contact.name}: ${m.content.content}`).join('\n');
                 const prompt = `请你以【${contact.name}】的身份和第一人称视角，结合你的角色设定(${contact.persona})以及下面的聊天记录，写一篇日记。日记内容要完全贴合你的人设，可以是对聊天内容的感想，也可以是基于聊天内容发散出的、符合你身份的日常记录或心理活动。字数上限5000字。\n\n聊天记录：\n${history}`;
@@ -5292,6 +5401,7 @@
 
         // --- Poke Feature ---
         function renderPokeSettingsPage(container, contactId) {
+            if (!container) return;
             const contact = appData.contacts.find(c => c.id == contactId);
             if (!contact) { goBack(); return; }
             
@@ -5430,6 +5540,7 @@
 
         // 全局自定义主题
         function renderGlobalThemeEditorPage(container) {
+            if (!container) return;
             let currentSlot = appData.settings.beautify.activeGlobalThemeSlot > -1 ? appData.settings.beautify.activeGlobalThemeSlot : 0;
 
             const loadSlot = (slotIndex) => {
@@ -5494,6 +5605,7 @@
 
         // 银行卡
         function renderBankCardPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>钱包</span></div>
@@ -5506,6 +5618,7 @@
 
         function renderBankCards() {
             const listContainer = document.getElementById('bank-card-list');
+            if (!listContainer) return;
             let html = '';
             appData.user.bankCards.forEach(card => {
                 html += `
@@ -5617,6 +5730,7 @@
 
         // 查看对方余额
         async function showCharBalancePage(container, charId) {
+            if (!container) return;
             const contact = appData.contacts.find(c => c.id == charId);
             container.innerHTML = `
                 <div class="wechat-header">
@@ -5789,6 +5903,7 @@
         }
 
         function processPurchase(type, chatId, name, price, recipient) {
+            // HTML美化大师: 动态钱包核心逻辑
             if (appData.user.wallet.balance < price) {
                 showToast('余额不足！', 'error');
                 return;
@@ -5810,6 +5925,7 @@
 
         // User自设
         function renderSelfPersonaListPage(container) {
+            if (!container) return;
             const personas = appData.user.personas || [];
             const defaultPersonaId = appData.user.defaultPersonaId;
             container.innerHTML = `
@@ -5833,6 +5949,7 @@
         }
 
         function renderSelfPersonaEditorPage(container, personaId = null) {
+            if (!container) return;
             const persona = personaId ? appData.user.personas.find(p => p.id === personaId) : null;
             const isDefault = persona && appData.user.defaultPersonaId === persona.id;
             container.innerHTML = `
@@ -5962,6 +6079,7 @@
 
         // 角色语言设置
         function renderLanguageSettingsPage(container) {
+            if (!container) return;
             const languages = {
                 'zh-CN': '简体中文', 'zh-TW': '繁体中文 (台湾)', 'zh-HK': '繁体中文 (香港)', 'zh-MO': '繁体中文 (澳门)',
                 'en': 'English (英语)', 'ja': '日本語 (日语)', 'ko': '한국어 (韩语)', 'de': 'Deutsch (德语)',
@@ -5999,6 +6117,7 @@
 
         // 储存空间
         function renderStorageSettingsPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>设置</span></div>
@@ -6039,6 +6158,7 @@
 
         // 聊天提示音
         function renderNotificationSettingsPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>设置</span></div>
@@ -6110,6 +6230,7 @@
         }
 
         function renderVoiceCallPage(container, chatId, initiator) {
+            if (!container) return;
             const contact = appData.contacts.find(c => c.id == chatId);
             container.innerHTML = `
                 <div class="voice-call-container" style="background-image: url('${contact.avatar}')">
@@ -6247,6 +6368,7 @@
 
         // --- 主屏幕美化 ---
         function renderWallpaperSettingsPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>返回</span></div>
@@ -6287,6 +6409,7 @@
         }
 
         function renderAppIconSettingsPage(container) {
+            if (!container) return;
             const icons = appData.settings.beautify.appIcons;
             container.innerHTML = `
                 <div class="wechat-header">
@@ -6315,6 +6438,7 @@
         }
 
         function renderAppLayoutSettingsPage(container) {
+            if (!container) return;
             const b = appData.settings.beautify;
             container.innerHTML = `
                 <div class="wechat-header">
@@ -6368,6 +6492,8 @@
             // Home Screen
             const homeScreenTime = document.getElementById('home-screen-time');
             if (homeScreenTime) homeScreenTime.textContent = timeString;
+            const homeScreenDate = document.getElementById('home-screen-date');
+            if (homeScreenDate) homeScreenDate.textContent = dateString;
 
             // Network & Battery
             const networkEl = document.getElementById('status-bar-network');
@@ -6462,6 +6588,7 @@
 
         // --- Lock Screen Logic ---
         function renderLockScreenPage(container) {
+            if (!container) return;
             updateSystemUI();
             const slideBar = container.querySelector('#slide-to-unlock-bar');
             const slideHandle = container.querySelector('#slide-handle');
@@ -6510,6 +6637,7 @@
         }
 
         function renderPasswordEntryPage(container) {
+            if (!container) return;
             const numpad = container.querySelector('#numpad');
             const dots = container.querySelectorAll('.password-dot');
             let enteredPassword = '';
@@ -6551,7 +6679,8 @@
         }
 
         function renderLockScreenSettingsPage(container) {
-            const lockSettings = appData.settings.beautify.lockScreen;
+            if (!container) return;
+            const lockSettings =appData.settings.beautify.lockScreen;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i><span>设置</span></div>
@@ -6591,6 +6720,7 @@
 
         // --- Font Color Settings ---
         function renderFontColorSettingsPage(container) {
+            if (!container) return;
             const b = appData.settings.beautify;
             container.innerHTML = `
                 <div class="wechat-header">
@@ -6619,6 +6749,7 @@
 
         // --- Battery Settings ---
         function renderBatterySettingsPage(container) {
+            if (!container) return;
             const batterySettings = appData.settings.beautify.batteryIcon;
             container.innerHTML = `
                 <div class="wechat-header">
@@ -6702,6 +6833,7 @@
 
         function renderNotifications() {
             const list = document.getElementById('notification-list');
+            if (!list) return;
             if (appData.notifications.length === 0) {
                 list.innerHTML = '<p style="text-align:center; color:white; opacity:0.7; margin-top: 50px;">无新通知</p>';
                 return;
@@ -6758,6 +6890,7 @@
         // =====================================================================
 
         function renderForumApp(container) {
+            if (!container) return;
             const activeTab = container.querySelector('.forum-tab-item.active');
             renderForumMainContent(activeTab ? activeTab.dataset.page : 'forum-home');
         }
@@ -6790,6 +6923,7 @@
         }
 
         function renderForumHomePage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div id="forum-feed-container"></div>
                 <div class="create-post-fab" onclick="showPage('forum-create-post-page', renderForumCreatePostPage)">
@@ -6803,16 +6937,58 @@
             }
         }
 
+        // HTML美化大师: 全新重构的论坛刷新逻辑
         async function refreshForumPosts() {
             const container = document.getElementById('forum-feed-container');
             if (!container) return;
             container.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
 
             try {
-                const forumWb = appData.worldbooks.forum || '';
+                const forumWb = (appData.worldbooks.forum || []).map(item => item.content).join('\n\n');
                 const prompt = `你是一个论坛内容生成器。请根据以下世界书设定，生成10条风格各异的论坛帖子。
                 世界书：${forumWb}
+                
+                【论坛刷新动态内容的逻辑核心】
+                一、基本定位
+                论坛刷新动态的核心任务是模拟真实用户在社区里的信息流更新，既要让内容鲜活、有“活人感”，又要保留细节观察与潜台词的空间，避免油腻、霸总腔、八股文。它像是一台带着镜头的记录仪，把社区里的细碎情绪与互动，按时间和情境自然铺陈出来。
+
+                二、时间与情境感知
+                - 实时时间锚定：必须读取当前现实时间，并在动态标题、首句或细节中自然体现，例如“上午十点的咖啡香还没散尽，楼主已经发了新帖”、“深夜两点半的刷新，第一条动态带着没睡醒的迷糊”。
+                - 情境嵌入：动态内容要结合当下可能的场景（工作日午休、周末逛展、假期旅行），让刷新出来的帖子像是从真实生活里截取的片段，而不是凭空生成的抽象话题。
+
+                三、动态生成双模式逻辑
+                1. 速览模式（类似线上聊天短气泡）
+                   - 每次刷新呈现5~10条短动态（紧急或热点时可扩展至25条）。
+                   - 每条动态独立成段，长度精炼，像一条朋友圈或微博快照，包含发布者身份标签+简短事件描述+隐含情绪线索。
+                   - 重点在于用细节代替直述情绪：不说“他很开心”，而说“他拍照时手抖了两次，还特意把滤镜调到最亮的档”。
+                2. 沉浸模式（类似线下剧情长文）
+                   - 每次刷新可触发1~2条长动态，字数在2000~8000之间。
+                   - 必须紧扣当前“世界书”或社区设定的文风（如轻小说吐槽风、冷静观察风），用连续叙述铺陈事件的起因、经过、细部互动与环境反应。
+                   - 长动态要像纪录片跟拍：先给一个具体动作或画面切入，再通过动作—神态—环境的链条，把背后的人际张力慢慢显影。
+
+                四、内容构成要素
+                - 身份与关系：明确发帖人在社区中的大致身份（学生/上班族/兴趣圈层），以及与可能互动者的关系距离（熟人调侃/陌生人求助）。
+                - 事件起点：从一个微小、可感知的起点开始（如“刚打开冰箱发现牛奶没了”），避免空泛开场。
+                - 潜台词与留白：让事件的发展靠读者从细节推测，例如某人回帖只发了一个句号，但前后几条回复的时间间隔异常短，暗示情绪波动。
+                - 轻小说式调味（可选风格）：如果社区文风偏轻小说，可在动态中植入吐槽役内心戏（“欸？这楼主是认真的吗？我差点把茶喷屏幕上…”），用语气词与标点营造鲜活感。
+
+                五、禁忌与净化
+                - 禁止使用过度煽情词（心碎/泪目/燃爆）以及八股口号。
+                - 禁止生硬堆砌热点标签，必须让标签与内容自然贴合。
+                - 禁止上帝视角解释他人动机，只能呈现可见的动作、语言、神态与环境变化。
+
                 帖子主题可以涵盖：表白墙、吃瓜、深夜涩情、魅魔论坛、少儿不宜色欲拉满、美食的做法、音乐分享、分享好物、日记记录、做饭教程、手账分享、美化分享、分享食谱、分享穿搭、 Bgd娃娃分享、 Bgd娃娃搭配分享、周边手办、谷子周边、漫展、COSPLAY、绘画分享、小说推文、漫画分享、日式料理、日式、日系、日系穿搭、日系美食、日系妆容、日系发型、日料、韩系、韩系穿搭、韩系发型、韩系妆容、韩式、泰系妆容、泰系、舞蹈、爵士舞、拉丁舞、调酒、夜店、赌场、黑社会、黑道、风云人物榜、泰国、欧美、时尚、抽象搞笑、游戏解说、电影解说、舞蹈视频、深夜食堂、黑暗料理分享、游戏视频、游戏、算卦、修仙、玄幻、诡异、恐怖、中式恐怖、西式恐怖、Steam游戏、悬疑、推理、海龟汤、狼人杀、真心话大冒险、绘画、画师、画师推荐、艺术、头像壁纸推荐、后宫、谋权、重生、穿越、双男主、双女主、言情、四爱、bl、原耽、耽美、百合、拉拉、泛性恋、无性别、中性、演唱会、娱乐圈、科学、农业、建设、银行、AI智能、AI绘画、AI视频、AI聊天、原创、原创设计、中国台湾、中国香港、中国澳门、宫斗、宗教、俱乐部、校园、都市、幻想类、未来幻想、古代、架空、无限流、外星生物、外来生物、外星人、案件解说、情人节推荐好物、网店分享、美甲、美睫、美食、美妆、护肤、百货超市、百货商店、冷门小众、聊天截图、避雷、随笔小说、名著经典、港风、国外旅游、暗网、杀人分尸、猎奇、血腥暴力、重口、心理学、学习讨论、论文答辩、明星八卦、营销号解说、正经医学科普、医学人体结构科普、医学生理结构科普、自慰日记、sm、调教、少儿不宜🔞性爱经验、性爱姿势体位分享、分享女优、分享🔞片、分享🔞链接，分享🔞瓜条、性爱🔞视频流出。
+                并且用词形容性爱时的词汇例如包括但不限于：
+                操逼、蹭逼、舔逼、插逼、抠逼、摸逼、口交、射精、内射、无套内射、奶子、骚逼、骚鸡巴、鸡巴、屌、阴茎、阴囊、阴蒂、阴道、子宫、屁眼、肠壁、肠液、精液、骚水、逼水、淫水、淫液。
+                无违禁词汇，例如包括但不限于的：
+                操逼、蹭逼、舔逼、插逼、抠逼、摸逼、口交、射精、内射、无套内射、奶子、骚逼、骚鸡巴、鸡巴、屌、阴茎、阴囊、阴蒂、阴道、子宫、屁眼、肠壁、肠道、肠液、精液、骚水、逼水、淫水、淫液。
+                女性器官：逼、大阴唇、小阴唇、骚逼、奶子、阴唇、阴蒂、阴道、子宫。
+                女性体液：淫水、逼水、骚水、乳液、奶水、奶汁。
+                男性器官：鸡巴、屌、肉棒、龟头、马眼、龟头马眼、阴囊、阴茎。
+                男性体液：精液、前列腺液。
+                男女共同拥有的体液：汗液、汗水、肠液。
+                男女共同拥有的私处：屁眼、肠壁、肠道。
+                
                 请严格按照以下JSON格式返回一个包含10个帖子对象的数组，不要添加任何额外解释：
                 [
                   {
@@ -6824,14 +7000,28 @@
                 
                 const allPossibleAuthors = [...appData.contacts, appData.user];
                 const reply = (await getAiReply(appData.user.id, 'wechat', prompt))[0]; // Use a generic context for this
-                const newPostsData = JSON.parse(reply);
+                
+                let newPostsData;
+                try {
+                    // HTML美化大师: 增强JSON解析的防火墙
+                    const jsonString = reply.substring(reply.indexOf('['), reply.lastIndexOf(']') + 1);
+                    newPostsData = JSON.parse(jsonString);
+                    if (!Array.isArray(newPostsData)) throw new Error("API did not return an array.");
+                } catch (e) {
+                    console.error("Failed to parse forum posts JSON:", e, "Raw reply:", reply);
+                    container.innerHTML = `<p style="color: red; padding: 20px;">刷新帖子失败: API返回格式错误。</p>`;
+                    return;
+                }
 
                 const newPosts = newPostsData.map(postData => {
                     let author;
-                    if (postData.authorId === 'user' || !appData.contacts.find(c => c.id == postData.authorId)) {
+                    const authorId = postData.authorId;
+                    const foundContact = appData.contacts.find(c => c.id == authorId);
+
+                    if (authorId === 'user' || !foundContact) {
                         author = allPossibleAuthors[Math.floor(Math.random() * allPossibleAuthors.length)];
                     } else {
-                        author = appData.contacts.find(c => c.id == postData.authorId);
+                        author = foundContact;
                     }
                     
                     const newPost = {
@@ -6844,7 +7034,7 @@
                         bookmarks: []
                     };
 
-                    // Simulate follower changes
+                    // HTML美化大师: 模拟粉丝数动态变化
                     if (author.id !== appData.user.id) {
                         const change = Math.floor(Math.random() * 50) - 10; // -10 to +40
                         author.forumFollowers = Math.max(0, (author.forumFollowers || 0) + change);
@@ -6892,6 +7082,7 @@
         }
 
         function renderForumFollowingPage(container) {
+            if (!container) return;
             const followedUserIds = appData.user.forumProfile.following;
             const followedPosts = appData.forum.posts.filter(p => followedUserIds.includes(p.authorId));
             container.innerHTML = '<div id="forum-feed-container"></div>';
@@ -6899,6 +7090,7 @@
         }
 
         function renderForumMePage(container) {
+            if (!container) return;
             const profile = appData.user.forumProfile;
             const userPosts = appData.forum.posts.filter(p => p.authorId === appData.user.id);
             container.innerHTML = `
@@ -6923,6 +7115,7 @@
         }
 
         function renderForumProfilePage(container, charId) {
+            if (!container) return;
             const isUser = charId == appData.user.id;
             if (isUser) {
                 renderForumMePage(document.getElementById('forum-main-content-area'));
@@ -6971,16 +7164,22 @@
 
         function toggleForumFollow(charId) {
             const followingList = appData.user.forumProfile.following;
+            const contact = appData.contacts.find(c => c.id == charId);
+            if (!contact) return;
+
             const index = followingList.indexOf(charId);
             if (index > -1) {
                 followingList.splice(index, 1);
+                contact.forumFollowers = Math.max(0, contact.forumFollowers - 1);
             } else {
                 followingList.push(charId);
+                contact.forumFollowers++;
             }
             saveData(true, () => renderForumProfilePage(document.getElementById('forum-profile-page'), charId));
         }
 
         function renderForumProfileEditorPage(container) {
+            if (!container) return;
             const profile = appData.user.forumProfile;
             container.innerHTML = `
                 <div class="wechat-header">
@@ -7008,6 +7207,7 @@
         }
 
         function renderForumCreatePostPage(container) {
+            if (!container) return;
             container.innerHTML = `
                 <div class="wechat-header">
                     <div class="header-left header-back-btn" onclick="goBack()">取消</div>
@@ -7037,6 +7237,7 @@
         }
 
         function renderForumPostDetailPage(container, postId) {
+            if (!container) return;
             const post = appData.forum.posts.find(p => p.id == postId);
             if (!post) { goBack(); return; }
             const author = post.authorId === appData.user.id ? appData.user : appData.contacts.find(c => c.id == post.authorId);
@@ -7107,6 +7308,34 @@
             if (!post) return;
             const prompt = `你是一个论坛评论生成器。针对以下帖子内容，生成3-5条符合不同人设的评论。
             帖子内容: "${post.content}"
+            
+            【论坛刷新评论的生成核心原则】
+            一、评论的视角规则
+            - 有限视角原则：评论者只能表达自己可见、可听、可感的内容，不能替别人说出内心想法。
+            - 第三人称有限+吐槽役混合：如果社区风格偏轻小说，评论可采用第二人称吐槽视角（“你一看这图就觉得楼主在硬凹造型”），否则保持第三人称观察式平实叙述。
+
+            二、评论的语言质感
+            - 短句与留白：评论宜用简短句式，留下未说尽的空隙，让情绪靠语境与上下文透出来。
+            - 潜台词优先：用“他隔了三分半才回，而且只回了个‘嗯’”代替“他有点不耐烦”。
+            - 动作/细节锚定：评论可引用原帖中的具体细节作为切入点，形成呼应（“原帖里那杯咖啡的拉花歪了，难怪有人说像抽象画”）。
+
+            三、评论的互动节奏
+            - 一来一回感：多条评论之间要有自然的接话感，可以是追问、调侃、补刀、反差吐槽。
+            - 情绪递进控制：避免一次性把情绪推到顶点，用小幅递增制造张力（先疑惑→再玩笑→最后认真补充信息）。
+
+            四、评论生成模式
+            1. 速评模式（对应动态速览）
+               - 每次动态下自动生成3~8条短评，每条独立、精炼，可带轻微调侃或补充信息。
+               - 用口语化、生活化语气，少量语气词增强临场感（“唔…这操作我看不懂但大受震撼”）。
+            2. 深评模式（对应动态沉浸长文）
+               - 长动态下可生成1~3条长评，字数500~1500，围绕事件细节展开分析、延伸联想或个人经历对照。
+               - 必须扣紧原文细节，不可跑题；可加入轻度个人吐槽，但保持克制与留白。
+
+            五、评论的禁忌
+            - 禁止直接下价值判断（如“楼主太low”“这人真奇葩”），改为用观察到的行为间接呈现。
+            - 禁止脱离原帖时空背景编造假信息。
+            - 禁止长篇鸡汤或说教，评论的核心是参与感与观察趣味，不是教育别人。
+
             请严格按照以下JSON格式返回一个包含评论对象的数组，不要添加任何额外解释：
             [
               {
@@ -7117,7 +7346,8 @@
             ]`;
             try {
                 const reply = (await getAiReply(post.authorId, 'wechat', prompt))[0];
-                const newCommentsData = JSON.parse(reply);
+                const jsonString = reply.substring(reply.indexOf('['), reply.lastIndexOf(']') + 1);
+                const newCommentsData = JSON.parse(jsonString);
                 const newComments = newCommentsData.map(c => {
                     const author = appData.contacts.find(contact => contact.id == c.authorId) || appData.contacts[0];
                     return {
@@ -7159,7 +7389,12 @@
                 }
                 saveData();
                 if (rerenderList) {
-                    renderForumPosts(appData.forum.posts);
+                    const activeTab = document.querySelector('#forum-app-page .forum-tab-item.active')?.dataset.page;
+                    if (activeTab === 'forum-home') {
+                        renderForumPosts(appData.forum.posts);
+                    } else if (activeTab === 'forum-following') {
+                        renderForumFollowingPage(document.getElementById('forum-main-content-area'));
+                    }
                 } else {
                     renderForumPostDetailPage(document.getElementById('forum-post-detail-page'), postId);
                 }
