@@ -135,6 +135,42 @@
         .screen { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; background-color: var(--wechat-bg); border-radius: 34px; overflow: hidden; }
         .phone-container.fullscreen .screen { border-radius: 0; }
         
+        /* --- iPhone6 模式 --- */
+        body.iphone6-mode .phone-container {
+            padding: 80px 15px; /* 创建上下 "chin" */
+            border-radius: 40px;
+            background: var(--phone-border-color);
+            position: relative;
+        }
+        body.iphone6-mode .screen {
+            border-radius: 5px;
+            height: 100%;
+            width: 100%;
+        }
+        body.iphone6-mode .phone-container::before { /* 听筒 */
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: #444;
+            border-radius: 2px;
+        }
+        body.iphone6-mode .phone-container::after { /* Home键 */
+            content: '';
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #666;
+            background: #333;
+        }
+
         /* --- 状态栏 & 通知栏 --- */
         .status-bar { height: 30px; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; color: black; font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-weight: 500; position: absolute; top: 0; left: 0; right: 0; z-index: 100; cursor: pointer; }
         body.dark-mode .status-bar, body.transparent-mode .status-bar, body.dark-abyss-mode .status-bar { color: white; }
@@ -296,9 +332,6 @@
         .me-menu-item i { font-size: 24px; color: var(--wechat-blue); width: 24px; text-align: center; }
         .me-menu-item span { flex: 1; font-size: var(--font-size-base); color: var(--global-font-color); }
         #conversation-page .content-area { background-color: var(--wechat-bg); padding: 10px; display: flex; flex-direction: column; background-image: var(--chat-background-image); background-size: cover; background-position: center; position: relative; }
-        .chat-scroll-buttons { position: absolute; bottom: 10px; right: 10px; display: flex; flex-direction: column; gap: 10px; z-index: 20; }
-        .chat-scroll-buttons .scroll-btn { width: 36px; height: 36px; background: rgba(0,0,0,0.3); color: white; border-radius: 50%; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 16px; }
-        #scroll-to-bottom-btn { display: none; }
         .message-row { display: flex; flex-direction: column; margin-bottom: 5px; max-width: 100%; }
         .message-timestamp { text-align: center; color: var(--wechat-text-secondary); font-size: calc(var(--font-size-base) - 3px); margin: 10px 0; }
         .message-recalled, .message-system { text-align: center; color: var(--wechat-text-secondary); font-size: calc(var(--font-size-base) - 3px); margin: 10px 0; background: rgba(0,0,0,0.1); padding: 4px 8px; border-radius: 4px; display: inline-block; align-self: center; }
@@ -905,7 +938,7 @@
                     ringtone: ''
                 },
                 dnd: false,
-                displayMode: 'default' // 'default' or 'fullscreen'
+                displayMode: 'default' // 'default', 'fullscreen', or 'iphone6'
             },
             music: {
                 library: [], favorites: [], currentSongId: null, isPlaying: false,
@@ -971,7 +1004,7 @@
                     if (!appData.music.playerBackground) appData.music.playerBackground = defaultAppData.music.playerBackground;
                     if (!appData.settings.beautify.redPacketBubbleCss) appData.settings.beautify.redPacketBubbleCss = '';
                     if (!appData.settings.beautify.transferBubbleCss) appData.settings.beautify.transferBubbleCss = '';
-                    if (appData.settings.displayMode === undefined) appData.settings.displayMode = 'default';
+                    if(appData.settings.displayMode === undefined) appData.settings.displayMode = 'default';
                     
                     appData.contacts.forEach(c => {
                         if (c.isPinned === undefined) c.isPinned = false;
@@ -1382,6 +1415,10 @@
                         <div class="details"><span class="name">保留边框</span></div>
                         ${appData.settings.displayMode === 'default' ? '<i class="fas fa-check" style="color: var(--wechat-green);"></i>' : ''}
                     </div>
+                    <div class="list-item" onclick="setDisplayMode('iphone6')">
+                        <div class="details"><span class="name">保留边框②</span></div>
+                        ${appData.settings.displayMode === 'iphone6' ? '<i class="fas fa-check" style="color: var(--wechat-green);"></i>' : ''}
+                    </div>
                     <div class="list-item" onclick="setDisplayMode('fullscreen')">
                         <div class="details"><span class="name">去除边框进入全屏</span></div>
                         ${appData.settings.displayMode === 'fullscreen' ? '<i class="fas fa-check" style="color: var(--wechat-green);"></i>' : ''}
@@ -1574,20 +1611,6 @@
             
             renderMessages(chatId, chatType, 'wechat');
 
-            const messageArea = document.getElementById('message-area');
-            const scrollToBottomBtn = document.getElementById('scroll-to-bottom-btn-wechat');
-            if (messageArea) {
-                messageArea.onscroll = () => {
-                    if (scrollToBottomBtn) {
-                        if (messageArea.scrollHeight - messageArea.scrollTop - messageArea.clientHeight > 200) {
-                            scrollToBottomBtn.style.display = 'flex';
-                        } else {
-                            scrollToBottomBtn.style.display = 'none';
-                        }
-                    }
-                };
-            }
-
             const input = document.getElementById('chat-input');
             input.onkeydown = (e) => {
                 if (e.key === 'Enter' && input.value.trim() !== '') {
@@ -1710,14 +1733,9 @@
 
             const conversation = chat.conversation || [];
             
-            let html = `
-                <div class="chat-scroll-buttons">
-                    <button class="scroll-btn" onclick="document.getElementById('${containerId}').scrollTop = 0;"><i class="fas fa-arrow-up"></i></button>
-                    <button class="scroll-btn" id="scroll-to-bottom-btn-wechat" onclick="document.getElementById('${containerId}').scrollTop = document.getElementById('${containerId}').scrollHeight;"><i class="fas fa-arrow-down"></i></button>
-                </div>
-            `;
+            let html = '';
             let lastTimestamp = 0;
-            (conversation || []).forEach((msg, index) => {
+            conversation.forEach((msg, index) => {
                 if (!msg || !msg.type || !msg.content) {
                     console.warn("Message Firewall: Skipped rendering malformed message object:", msg);
                     return;
@@ -2566,7 +2584,7 @@
                 </div>
                 <div class="content-area">
                     <div class="list-divider"></div>
-                    ${['white', 'black', 'simple-white', 'pink', 'aqua-blue', 'semi-transparent', 'transparent', 'stereo'].map(frame => `
+                    ${['white', 'black', 'simple-white', 'pink', 'aqua-blue', 'semi-transparent', 'transparent', 'stereo', 'evol'].map(frame => `
                     <div class="list-item" onclick="setPhoneFrame('${frame}')">
                         <div class="details"><span class="name">${{
                             white:'白色', 
@@ -2576,7 +2594,8 @@
                             'aqua-blue':'水蓝色', 
                             'semi-transparent':'半透明', 
                             transparent:'透明', 
-                            stereo:'增强立体'
+                            stereo:'增强立体',
+                            evol: 'Evol'
                         }[frame]}</span></div>
                         ${appData.settings.beautify.phoneFrame === frame ? '<i class="fas fa-check" style="color: var(--wechat-green);"></i>' : ''}
                     </div>`).join('')}
@@ -3422,11 +3441,14 @@
                     timestamp: Date.now()
                 };
             } else if (stickerMatch) {
-                const packName = stickerMatch[1];
+                const packName = stickerMatch[1].trim();
                 const pack = appData.stickers.packs.find(p => p.name === packName);
                 if (pack && pack.stickers.length > 0) {
                     const randomSticker = pack.stickers[Math.floor(Math.random() * pack.stickers.length)];
                     message = { id: Date.now() + Math.random(), sender: senderId, type: 'sticker', content: { url: randomSticker.url }, timestamp: Date.now() };
+                } else {
+                    // Fallback if sticker pack not found
+                    message = { id: Date.now() + Math.random(), sender: senderId, type: 'text', content: { content: `[找不到表情包: ${packName}]` }, timestamp: Date.now() };
                 }
             } else if (coupleInviteMatch) {
                 message = {
@@ -3556,6 +3578,8 @@ ${worldbookPreset}
    - 转账/红包必须用CSS组件呈现，示例：
    [transfer: amount=100, remark=给你的零花钱]
    [redPacket: amount=88, remark=恭喜发财]
+   - 表情包必须用特定格式呈现，示例：
+   [sticker:可爱猫猫] (AI会根据表情包名称随机发送该包内的表情)
 3. 语言净化：彻底摒弃油腻感、霸总腔、八股文，禁用"投石子/小兽/像是在陈述事实"等表述，追求自然鲜活的口语化表达
 
 二、双模式切换机制
@@ -3741,6 +3765,7 @@ ${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的�
         
         function applyBeautifySettings() {
             const root = document.documentElement;
+            const body = document.body;
             const bubbleStyle = document.getElementById('user-bubble-style');
             const redPacketBubbleStyle = document.getElementById('user-redpacket-bubble-style');
             const transferBubbleStyle = document.getElementById('user-transfer-bubble-style');
@@ -3762,9 +3787,12 @@ ${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的�
             root.style.setProperty('--app-icon-radius', `${beautify.appIconRadius}px`);
             root.style.setProperty('--lock-screen-wallpaper', `url(${beautify.lockScreen.wallpaper})`);
 
-            document.body.className = '';
+            body.className = '';
             if (beautify.theme) {
-                document.body.classList.add(`${beautify.theme}-mode`);
+                body.classList.add(`${beautify.theme}-mode`);
+            }
+            if (appData.settings.displayMode === 'iphone6') {
+                body.classList.add('iphone6-mode');
             }
             root.style.setProperty('--global-font-color', beautify.globalFontColor);
 
@@ -3776,7 +3804,8 @@ ${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的�
                 'aqua-blue': { color: '#00FFFF', width: '10px', shadow: '0 10px 40px rgba(0, 255, 255, 0.3)', highlight: 'transparent', backdrop: 'none' },
                 'semi-transparent': { color: 'rgba(255, 255, 255, 0.1)', width: '10px', shadow: '0 10px 40px rgba(0,0,0,0.2)', highlight: 'rgba(255, 255, 255, 0.2)', backdrop: 'blur(10px)' },
                 transparent: { color: 'transparent', width: '0px', shadow: 'none', highlight: 'transparent', backdrop: 'none' },
-                stereo: { color: '#111', width: '10px', shadow: '0 25px 60px rgba(0,0,0,0.5), inset 0 0 15px rgba(255,255,255,0.05)', highlight: '#fff', backdrop: 'none' }
+                stereo: { color: '#111', width: '10px', shadow: '0 25px 60px rgba(0,0,0,0.5), inset 0 0 15px rgba(255,255,255,0.05)', highlight: '#fff', backdrop: 'none' },
+                evol: { color: '#fff', width: '1px', shadow: '0 0 0 1px #FFD1DC, 0 0 0 2px #000', highlight: 'transparent', backdrop: 'none' }
             };
             const style = frameStyles[beautify.phoneFrame] || frameStyles.black;
             root.style.setProperty('--phone-border-color', style.color);
@@ -3997,6 +4026,48 @@ ${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的�
             closeModal('forward-message-modal');
         }
         
+        function showForwardedContentModal(event, messageId, chatId, chatType, source) {
+            event.stopPropagation();
+            const chat = chatType === 'group' ? appData.groups.find(g => g.id == chatId) : appData.contacts.find(c => c.id == chatId);
+            const conversation = source === 'wechat' ? chat.conversation : chat.conversation;
+            const message = conversation.find(m => m.id == messageId);
+            if (!message || message.type !== 'forward') return;
+
+            const modalId = 'view-forwarded-messages-modal';
+            
+            const messagesHtml = message.content.messages.map(msg => {
+                const isSent = msg.sender === appData.user.id;
+                let sender;
+                if (isSent) {
+                    sender = appData.user;
+                } else {
+                    sender = appData.contacts.find(c => c.id == msg.sender) || appData.groups.find(g => g.id == msg.sender)?.members.find(m => m.id == msg.sender) || {name: '未知', nickname: '未知', avatar: 'https://img.js.design/assets/img/65a881fa383e6a42242a3f33.jpg'};
+                }
+                
+                const bubbleHtml = isSent ? generateUserBubbleHtml(msg, chatId, chatType, source) : generateCharBubbleHtml(msg, chatId, chatType, source);
+                return `
+                    <div class="message-row ${isSent ? 'sent' : 'received'}">
+                        <div class="message-body">
+                            <div class="message-avatar-wrapper"><img src="${sender.avatar}" class="message-avatar"></div>
+                            <div class="message-content-wrapper">${bubbleHtml}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const modalHtml = `
+                <div class="modal-content" style="padding: 0; width: 90%; max-width: 340px; height: 80%; display: flex; flex-direction: column;" onclick="event.stopPropagation();">
+                    <div class="wechat-header" style="flex-shrink: 0;">
+                        <span class="header-title">聊天记录</span>
+                        <div class="header-right" style="font-size: 16px;" onclick="closeModal('${modalId}')">关闭</div>
+                    </div>
+                    <div class="content-area" style="padding: 10px;">${messagesHtml}</div>
+                </div>
+            `;
+            showModal(modalId, modalHtml);
+            document.getElementById(modalId).onclick = () => closeModal(modalId);
+        }
+
         // --- Moments Feature ---
         function renderMomentsPage(container) {
             if (!container) return;
@@ -4710,11 +4781,17 @@ ${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的�
             const message = conversation.find(m => m.id == messageId);
             if (!message || message.type !== 'forward') return;
 
-            constmodalId = 'view-forwarded-messages-modal';
+            const modalId = 'view-forwarded-messages-modal';
             
             const messagesHtml = message.content.messages.map(msg => {
                 const isSent = msg.sender === appData.user.id;
-                const sender = isSent ? appData.user : (appData.contacts.find(c => c.id == msg.sender) || {name: '未知', nickname: '未知', avatar: 'https://img.js.design/assets/img/65a881fa383e6a42242a3f33.jpg'});
+                let sender;
+                if (isSent) {
+                    sender = appData.user;
+                } else {
+                    sender = appData.contacts.find(c => c.id == msg.sender) || appData.groups.find(g => g.id == msg.sender)?.members.find(m => m.id == msg.sender) || {name: '未知', nickname: '未知', avatar: 'https://img.js.design/assets/img/65a881fa383e6a42242a3f33.jpg'};
+                }
+                
                 const bubbleHtml = isSent ? generateUserBubbleHtml(msg, chatId, chatType, source) : generateCharBubbleHtml(msg, chatId, chatType, source);
                 return `
                     <div class="message-row ${isSent ? 'sent' : 'received'}">
@@ -6524,6 +6601,8 @@ ${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的�
         }
         
         // --- Initialization ---
+        let isPhoneUnlocked = false; // HTML美化大师: 新增解锁状态标志
+
         document.addEventListener('DOMContentLoaded', async () => {
             const activationModal = document.getElementById('activation-modal');
             const phoneBody = document.getElementById('phone-body');
@@ -6553,6 +6632,7 @@ ${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的�
             await loadData();
             applyBeautifySettings();
             
+            isPhoneUnlocked = !appData.settings.beautify.lockScreen.enabled; // HTML美化大师: 初始化解锁状态
             pageHistory = [appData.settings.beautify.lockScreen.enabled ? 'lock-screen-page' : 'home-screen-page'];
             showPage(pageHistory[0], appData.settings.beautify.lockScreen.enabled ? renderLockScreenPage : renderHomeScreen);
 
@@ -6589,6 +6669,7 @@ ${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的�
         // --- Lock Screen Logic ---
         function renderLockScreenPage(container) {
             if (!container) return;
+            isPhoneUnlocked = false; // HTML美化大师: 每次到锁屏页都重置状态
             updateSystemUI();
             const slideBar = container.querySelector('#slide-to-unlock-bar');
             const slideHandle = container.querySelector('#slide-handle');
@@ -6674,6 +6755,7 @@ ${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的�
         }
 
         function unlockPhone() {
+            isPhoneUnlocked = true; // HTML美化大师: 核心修复，设置解锁标志
             pageHistory = ['home-screen-page'];
             showPage('home-screen-page', renderHomeScreen);
         }
@@ -6972,7 +7054,7 @@ ${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的�
                 - 潜台词与留白：让事件的发展靠读者从细节推测，例如某人回帖只发了一个句号，但前后几条回复的时间间隔异常短，暗示情绪波动。
                 - 轻小说式调味（可选风格）：如果社区文风偏轻小说，可在动态中植入吐槽役内心戏（“欸？这楼主是认真的吗？我差点把茶喷屏幕上…”），用语气词与标点营造鲜活感。
 
-                五、禁忌与净化
+                五、评论的禁忌
                 - 禁止使用过度煽情词（心碎/泪目/燃爆）以及八股口号。
                 - 禁止生硬堆砌热点标签，必须让标签与内容自然贴合。
                 - 禁止上帝视角解释他人动机，只能呈现可见的动作、语言、神态与环境变化。
@@ -7336,7 +7418,7 @@ ${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的�
             - 禁止脱离原帖时空背景编造假信息。
             - 禁止长篇鸡汤或说教，评论的核心是参与感与观察趣味，不是教育别人。
 
-            请严格按照以下JSON格式返回一个包含评论对象的数组，不要添加任何额外解释：
+            请严格按照以下txt文本格式返回一个包含评论对象的数组，不要添加任何额外解释：
             [
               {
                 "authorId": "随机选择一个角色的ID",
@@ -7347,7 +7429,7 @@ ${isOfflineMode ? '当前为线下剧情模式，请生成一段2000-8000字的�
             try {
                 const reply = (await getAiReply(post.authorId, 'wechat', prompt))[0];
                 const jsonString = reply.substring(reply.indexOf('['), reply.lastIndexOf(']') + 1);
-                const newCommentsData = JSON.parse(jsonString);
+                const newCommentsData = txt.parse(jsonString);
                 const newComments = newCommentsData.map(c => {
                     const author = appData.contacts.find(contact => contact.id == c.authorId) || appData.contacts[0];
                     return {
